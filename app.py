@@ -1,27 +1,3 @@
-# import uvicorn
-# from fastapi import FastAPI
-# from fastapi.middleware.wsgi import WSGIMiddleware
-
-# #from app_dash import dash_app
-
-# app = FastAPI()
-
-
-# @app.get("/")
-# def read_main():
-#     return {
-#         "routes": [
-#             {"method": "GET", "path": "/", "summary": "Landing"},
-#             {"method": "GET", "path": "/status", "summary": "App status"},
-#             {"method": "GET", "path": "/dash", "summary": "Sub-mounted Dash application"},
-#         ]
-#     }
-
-
-# @app.get("/status")
-# def get_status():
-#     return {"status": "ok"}
-
 
 # # A bit odd, but the only way I've been able to get prefixing of the Dash app
 # # to work is by allowing the Dash/Flask app to prefix itself, then mounting
@@ -45,10 +21,9 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
-
 from fastapi.middleware.wsgi import WSGIMiddleware
-from app_dash import appDash
 
+from app_dash import appDash
 #from routers import model_get
 
 app = FastAPI()
@@ -59,6 +34,10 @@ app.mount("/dash", WSGIMiddleware(appDash.server))
 async def redirect_root():
     response = RedirectResponse("http://127.0.0.1:8888/dash")
     return response
+
+@app.get("/status")
+def get_status():
+    return {"status": "ok"}
 
 #----------------------------------------------------------------
 if __name__ == "__main__":
