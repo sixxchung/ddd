@@ -1,55 +1,65 @@
-import dash
-import dash_core_components as dcc
-import dash_html_components as html
-import pandas as pd
-import plotly.graph_objs as go
-import flask
+# import uvicorn
+# from fastapi import FastAPI
+# from fastapi.middleware.wsgi import WSGIMiddleware
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+# #from app_dash import dash_app
 
-server = flask.Flask(__name__) # define flask app.server
-
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets, server=server) # call flask server
-
-# run following in command
-# gunicorn graph:app.server -b :8000
+# app = FastAPI()
 
 
-df = pd.read_csv(
-    'https://gist.githubusercontent.com/chriddyp/' +
-    '5d1ea79569ed194d432e56108a04d188/raw/' +
-    'a9f9e8076b837d541398e999dcbac2b2826a81f8/'+
-    'gdp-life-exp-2007.csv')
+# @app.get("/")
+# def read_main():
+#     return {
+#         "routes": [
+#             {"method": "GET", "path": "/", "summary": "Landing"},
+#             {"method": "GET", "path": "/status", "summary": "App status"},
+#             {"method": "GET", "path": "/dash", "summary": "Sub-mounted Dash application"},
+#         ]
+#     }
 
 
-app.layout = html.Div([
-    dcc.Graph(
-        id='life-exp-vs-gdp',
-        figure={
-            'data': [
-                go.Scatter(
-                    x=df[df['continent'] == i]['gdp per capita'],
-                    y=df[df['continent'] == i]['life expectancy'],
-                    text=df[df['continent'] == i]['country'],
-                    mode='markers',
-                    opacity=0.7,
-                    marker={
-                        'size': 15,
-                        'line': {'width': 0.5, 'color': 'white'}
-                    },
-                    name=i
-                ) for i in df.continent.unique()
-            ],
-            'layout': go.Layout(
-                xaxis={'type': 'log', 'title': 'GDP Per Capita'},
-                yaxis={'title': 'Life Expectancy'},
-                margin={'l': 40, 'b': 40, 't': 10, 'r': 10},
-                legend={'x': 0, 'y': 1},
-                hovermode='closest'
-            )
-        }
-    )
-])
+# @app.get("/status")
+# def get_status():
+#     return {"status": "ok"}
 
-if __name__ == '__main__':
-    app.run_server(debug=True)
+
+# # A bit odd, but the only way I've been able to get prefixing of the Dash app
+# # to work is by allowing the Dash/Flask app to prefix itself, then mounting
+# # it to root
+# dash_app = Dash(
+#     name=__name__,
+#     #server = server,
+# )
+
+# app_dash = create_app_dash(requests_pathname_prefix="/dash/")
+# app.mount("/dash", WSGIMiddleware(app_dash.server))
+
+# # if __name__ == "__main__":
+# #     uvicorn.run(app, port=8000)
+# if __name__ == "__main__":
+# #   app.run_server(debug=True)
+#     dash_app.run_server(
+#         port=8000
+#     )
+
+import uvicorn
+from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
+
+from fastapi.middleware.wsgi import WSGIMiddleware
+from app_dash import appDash
+
+#from routers import model_get
+
+app = FastAPI()
+app.mount("/dash", WSGIMiddleware(appDash.server))
+#app.include_router(model_get.router)
+
+@app.get("/")
+async def redirect_root():
+    response = RedirectResponse("http://127.0.0.1:8888/dash")
+    return response
+
+#----------------------------------------------------------------
+if __name__ == "__main__":
+    uvicorn.run(app, port=8888)
