@@ -15,11 +15,11 @@ def init_dash_APP_on_flask():
         #from .assets import compile_static_assets
 
         # Import Dash application
-        #from .dashboard import init_dashboard
+        from .dashboard import init_dashboard
 
-        app_dash = init_dashboard(app_flask)
+        dash_app = init_dashboard(server=app_flask)
 
         # Compile static assets
-        compile_static_assets(assets)
+        #compile_static_assets(assets)
 
-        return app_dash
+        return dash_app
