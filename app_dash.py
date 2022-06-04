@@ -15,10 +15,10 @@ external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 import datetime
 import os
 
-server = flask.Flask(__name__)
+#server = flask.Flask(__name__)
 appDash = dash.Dash(
         name=__name__, 
-        server=server, 
+        #server=server, 
         requests_pathname_prefix="/dash/",
         #assets_folder=ROOT+"/assets",
 
@@ -34,7 +34,7 @@ appDash = dash.Dash(
     )
     #dashApp.scripts.config.serve_locally = False
     #dcc._js_dist[0]['external_url'] = 'https://cdn.plot.ly/plotly-basic-latest.min.js'
-
+#server = appDash.server
 
 df = pd.read_csv(
 'https://gist.githubusercontent.com/chriddyp/' +

@@ -35,9 +35,9 @@ async def redirect_root():
     response = RedirectResponse("http://127.0.0.1:8000/dash")
     return response
 
-@app.get("/status")
-def get_status():
-    return {"status": "ok"}
+# @app.get("/status")
+# def get_status():
+#     return {"status": "ok"}
 
 #----------------------------------------------------------------
 if __name__ == "__main__":
